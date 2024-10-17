@@ -1,7 +1,7 @@
 === Document Embedder - Document Embedder Plugin ===
 Contributors: abuhayat,bplugins, shehabulislam 
 Tags:  Embed pdf, google docs, google drive, document, powerpoint
-Requires at least: 4.2
+Requires at least: 4.3
 Tested up to: 6.6.2
 Stable tag: 1.8.7
 Requires PHP: 7.1
