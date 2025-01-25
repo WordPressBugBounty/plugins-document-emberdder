@@ -6,7 +6,7 @@ class Activate{
     protected $FILE = PPV__FILE__;
     protected $prefix = '';
     protected $plugin_name = 'Document Embedder';
-    protected $url = 'https://bplugins.com/wp-json/data/v1/accept-data';
+    protected $url = 'https://api.bplugins.com/wp-json/data/v1/accept-data';
     protected $status = false;
     protected $post_type = 'ppt_viewer';
     protected $version = PPV_VER;

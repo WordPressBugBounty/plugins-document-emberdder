@@ -1,9 +1,9 @@
 === Document Embedder - Document Embedder Plugin ===
 Contributors: abuhayat,bplugins, shehabulislam 
 Tags:  Embed pdf, google docs, google drive, document, powerpoint
-Requires at least: 4.3
-Tested up to: 6.6.2
-Stable tag: 1.8.7
+Requires at least: 4.0
+Tested up to: 6.7
+Stable tag: 1.8.8
 Requires PHP: 7.1
 Donate link: https://www.buymeacoffee.com/abuhayat/
 License: GPLv2 or later
@@ -170,6 +170,9 @@ There is no Limit, you can embed thousands of doc if you want.
 4. Full Screen preview 
 
 == Changelog ==
+
+= 1.8.8 - 25 Jan, 2025 =
+* Fixed: Redirect to rest_no_route
 
 = 1.8.7 - 1 July, 2024 =
 * Added: Loader until PDF load

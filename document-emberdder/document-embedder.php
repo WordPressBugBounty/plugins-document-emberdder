@@ -3,8 +3,8 @@
  * Plugin Name: Document Embedder
  * Plugin URI:  http://documentembedder.com/
  * Description: Embed Any document easily in wordpress such as word, excel, powerpoint, pdf and more
- * Version:     1.8.7
- * Author:      bPlugins LLC
+ * Version:     1.8.8
+ * Author:      bPlugins
  * Author URI:  http://bplugins.com
  * License:     GPLv3
  * Text Domain:  ppv
@@ -17,7 +17,7 @@ function ppv_load_textdomain() {
 add_action( "init", 'ppv_load_textdomain', 20 );
 
 /*Some Set-up*/
-define('PPV_VER', '1.8.7'); 
+define('PPV_VER', '1.8.8'); 
 define('PPV_PLUGIN_DIR', plugin_dir_url(__FILE__) ); 
 define('PPV__FILE__', __FILE__ ); 
 define('PPV_IMPORT', '1.0.0'); 
