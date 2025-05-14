@@ -2,8 +2,8 @@
 Contributors: abuhayat,bplugins, shehabulislam 
 Tags:  Embed pdf, google docs, google drive, document, powerpoint
 Requires at least: 4.0
-Tested up to: 6.7
-Stable tag: 1.8.8
+Tested up to: 6.8
+Stable tag: 1.8.9
 Requires PHP: 7.1
 Donate link: https://www.buymeacoffee.com/abuhayat/
 License: GPLv2 or later
@@ -170,6 +170,10 @@ There is no Limit, you can embed thousands of doc if you want.
 4. Full Screen preview 
 
 == Changelog ==
+
+= 1.8.9 - 14 May, 2025 =
+* Improved: Security
+* Fixed: Function _load_textdomain_just_in_time was called incorrectly
 
 = 1.8.8 - 25 Jan, 2025 =
 * Fixed: Redirect to rest_no_route
