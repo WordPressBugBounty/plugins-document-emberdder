@@ -34,7 +34,7 @@ class BPLDocumentEmbedder {
         include_once BPLDE_PLUGIN_PATH . 'blocks.php';
 
         if (!class_exists('CSF')) {
-            require_once BPLDE_PLUGIN_PATH . 'Frameworks/Codestar/framework.php';
+            require_once BPLDE_PLUGIN_PATH . 'frameworks/Codestar/framework.php';
         }
         require_once BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/metabox.php';
         

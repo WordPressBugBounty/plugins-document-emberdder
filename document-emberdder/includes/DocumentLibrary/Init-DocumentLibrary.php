@@ -9,13 +9,9 @@ class BPLDocumentLibrary {
         add_shortcode('document_library', [$this, 'bplde_document_library_shortcode']);
 
         // AJAX actions
-        add_action('wp_ajax_nopriv_bplde_save_document_library', [$this, 'bplde_save_document_library']);
-        add_action('wp_ajax_bplde_save_document_library', [$this, 'bplde_save_document_library']);    
-        add_action('wp_ajax_nopriv_bplde_get_single', [$this, 'bplde_get_single']);
+        add_action('wp_ajax_bplde_save_document_library', [$this, 'bplde_save_document_library']);   
         add_action('wp_ajax_bplde_get_single', [$this, 'bplde_get_single']);
-        add_action('wp_ajax_nopriv_bplde_delete_document_library', [$this, 'bplde_delete_document_library']);
         add_action('wp_ajax_bplde_delete_document_library', [$this, 'bplde_delete_document_library']);
-        add_action('wp_ajax_nopriv_bplde_get_all', [$this, 'bplde_get_all']);
         add_action('wp_ajax_bplde_get_all', [$this, 'bplde_get_all']);
     }
 
@@ -66,6 +62,10 @@ class BPLDocumentLibrary {
 
     public function bplde_save_document_library() {
         check_ajax_referer('bplde_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => 'Unauthorized.']);
+        }
     
         $id       = isset($_POST['id']) ? intval($_POST['id']) : 0;
         $title    = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Untitled';
@@ -78,6 +78,10 @@ class BPLDocumentLibrary {
         ];
     
         if ($id > 0) {
+            if (!current_user_can('edit_post', $id)) {
+                wp_send_json_error(['message' => 'Unauthorized to edit this document.']);
+            }
+
             $post_data['ID'] = $id;
             $result = wp_update_post($post_data, true);
         } else {
@@ -99,15 +103,21 @@ class BPLDocumentLibrary {
 
     public function bplde_get_single() {
         check_ajax_referer('bplde_nonce', 'nonce');
+
         $id = intval($_GET['id'] ?? 0);
     
         if (!$id) {
             wp_send_json_error(['message' => 'Invalid ID']);
         }
-    
+
         $post = get_post($id);
+
         if (!$post) {
             wp_send_json_error(['message' => 'Post not found']);
+        }
+        
+        if (!current_user_can('edit_post', $id)) {
+            wp_send_json_error(['message' => 'Unauthorized.']);
         }
     
         $settings = get_post_meta($id, 'bplde_settings', true);
@@ -122,11 +132,16 @@ class BPLDocumentLibrary {
 
     public function bplde_get_all() {
         check_ajax_referer('bplde_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(['message' => 'Unauthorized.']);
+        }
     
         $query = new WP_Query([
             'post_type'      => 'document_library',
             'post_status'    => 'publish',
             'posts_per_page' => -1,
+            'author'         => get_current_user_id(),
         ]);
     
         $items = [];
@@ -150,6 +165,10 @@ class BPLDocumentLibrary {
         $id = intval($_POST['id'] ?? 0);
         if (!$id) {
             wp_send_json_error(['message' => 'Invalid ID']);
+        }
+
+        if (!current_user_can('delete_post', $id)) {
+            wp_send_json_error(['message' => 'Unauthorized to delete this document.']);
         }
         
         wp_delete_post($id, true);

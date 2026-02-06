@@ -13,6 +13,7 @@ if ( ! empty( $attributes['selectedPostId'] ) ) {
         }
     }
 }
+
 ?>
 <div <?php echo get_block_wrapper_attributes(); ?> id='<?php echo esc_attr( $id ); ?>' data-post-data='<?php echo esc_attr(wp_json_encode($form_data)); ?>'>
     <?php echo render_skeleton_markup( $form_data ); ?>

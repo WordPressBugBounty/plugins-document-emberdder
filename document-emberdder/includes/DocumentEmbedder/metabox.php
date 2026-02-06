@@ -5,11 +5,15 @@
     // Set a unique slug-like ID
     $prefix = 'ppv';
 
+  
+
     // Create a metabox
     CSF::createMetabox($prefix, array(
       'title'     => __('Configuration', 'ppv'),
       'post_type' => 'ppt_viewer',
     ));
+
+
 
     // Create a section
     CSF::createSection($prefix, array(
@@ -43,7 +47,7 @@
         [
           'id' => 'download',
           'type' => 'switcher',
-          'title' => __('Show downlaod button', 'ppv'),
+          'title' => __('Show Download Button', 'ppv'),
           'desc' => __('is not available for google drive and dropbox', 'ppv'),
           'default' => 1
         ],
