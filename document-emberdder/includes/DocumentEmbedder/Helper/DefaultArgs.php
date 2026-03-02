@@ -8,8 +8,7 @@ class DefaultArgs{
         $data = wp_parse_args( $data, $default );
         return $data;
     }
-
-    public static function doc(){
+    public static function doc() {
         return [
             'width' => '100%',
             'height' => '600px',
@@ -22,5 +21,4 @@ class DefaultArgs{
         ];
         
     }
-
 }

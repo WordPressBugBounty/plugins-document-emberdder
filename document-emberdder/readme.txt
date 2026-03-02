@@ -3,7 +3,7 @@ Contributors: bplugins, abuhayat, shehabulislam, taninrahman, farazi1, freemius
 Tags: document embedder, embed pdf, embed any document, pdf embedder, add document
 Requires at least: 6.5+
 Tested up to: 6.9
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 Requires PHP: 7.1
 Donate link: https://www.buymeacoffee.com/abuhayat/
 License: GPLv2 or later
@@ -255,6 +255,12 @@ Please report security bugs found in the source code of the Document Embedder pl
 
 
 == Changelog ==
+
+= 2.0.6 - 10 Feb 2026 =
+* **Update:** Improved overall user experience with a cleaner, more intuitive interface.
+* **Update:** Refactored internal codebase for better readability, maintainability, and performance.
+* **Fix:** Resolved all known UI and functionality issues across the plugin.
+* **Fix:** Removed unused and legacy code to reduce clutter and improve stability.
 
 = 2.0.4 - 24 January 2026 = 
 * Fixed Issues - download button and view button styles issue, Vulnerability issue.
