@@ -12,6 +12,10 @@ class DefaultArgs{
         return [
             'width' => '100%',
             'height' => '600px',
+            'width_tablet' => '',
+            'width_mobile' => '',
+            'height_tablet' => '',
+            'height_mobile' => '',
             'doc' => '',
             'showName' => true,
             'download' => true,

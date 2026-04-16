@@ -17,6 +17,13 @@ class BPLDocumentEmbedder {
         add_action('plugins_loaded', [__CLASS__, 'load_textdomain']);
         add_action('admin_enqueue_scripts', [$this, 'ppv_admin_scripts']);
         add_action('wp_enqueue_scripts', [$this, 'ppv_public_scripts']);
+        
+        add_action('wp_ajax_de_track_download', [$this, 'de_track_download']);
+        add_action('wp_ajax_nopriv_de_track_download', [$this, 'de_track_download']);
+
+        add_action('add_meta_boxes', [$this, 'add_stats_metabox']);
+
+        $this->ensure_table_exists();
 
         add_action( 'admin_head', function () {
             ?>
@@ -110,10 +117,10 @@ class BPLDocumentEmbedder {
 
                 /* RIGHT SECTION */
                 .bplProModal .right {
-                    flex: 1.3;
+                    flex: 1;
                     min-width: 300px;
                     width: 100%;
-                    max-width: 375px;
+                    max-width: 400px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -149,6 +156,7 @@ class BPLDocumentEmbedder {
                     list-style: none;
                     padding: 0;
                     margin: 0 0 32px 0;
+                    text-align: left;
                 }
 
                 .bplProModal .right ul li {
@@ -258,14 +266,14 @@ class BPLDocumentEmbedder {
                     const upgradeBtn = document.getElementById('upgradeButton');
 
                     const features = [
-                       "Upload Document from Dropbox",
-                       "Upload Document from Google Drive",
-                       "Set Height & Width for each document",
-                       "Show/Hide Download Button",
-                       "Show/Hide Filename",
-                       "Enable Document Loading Icon",
-                       "Enable Lightbox",
-                       "Upload Unlimited Documents For Document Library"
+                       "Lead Capture (Email Gate): Turn docs into lead magnets",
+                       "Advanced Download Control: Roles and IP limits",
+                       "Dropbox & Google Drive: Direct cloud integration",
+                       "Beautiful Lightbox View: Open docs in a premium popup",
+                       "Document Loading Icon: Professional loading experience",
+                       "Disable Popout: Keep visitors on your site longer",
+                       "Unlimited Library: Create massive doc collections",
+                       "Priority Support: Expert help whenever you need it"
                     ];
 
                     function renderFeatures() {
@@ -293,7 +301,10 @@ class BPLDocumentEmbedder {
                     document.body.addEventListener('click', function (e) {
                         const proField = e.target.closest('.ppv-lock-field');
                         if (!proField) return;
-                        console.log(proField);
+
+                        if (e.target.classList.contains('ppv-doc-link')) {
+                            return;
+                        }
 
                         e.preventDefault();
                         openProModal();
@@ -324,6 +335,16 @@ class BPLDocumentEmbedder {
         require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/PostType/PPTViewer.php');
         require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Services/Shortcode.php');
         require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Rest/getMeta.php');
+        require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Rest/LeadsRESTController.php');
+        new \PPV\Rest\LeadsRESTController();
+        if (file_exists(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Rest/DownloadGate.php')) {
+            require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Rest/DownloadGate.php');
+        }
+        if (is_admin()) {
+            if (file_exists(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Admin/LeadsPage.php')) {
+                require_once(BPLDE_PLUGIN_PATH . 'includes/DocumentEmbedder/Admin/LeadsPage.php');
+            }
+        }
 
         include_once BPLDE_PLUGIN_PATH . 'blocks.php';
 
@@ -373,7 +394,12 @@ class BPLDocumentEmbedder {
     }
 
     public function ppv_public_scripts() {
-        wp_enqueue_script('ppv-public', BPLDE_PLUGIN_DIR . 'build/public.js', array(), BPLDE_VER);
+        wp_enqueue_script('ppv-public', BPLDE_PLUGIN_DIR . 'build/public.js', array('jquery'), BPLDE_VER);
+        wp_localize_script('ppv-public', 'bplde_obj', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'track_nonce'   => wp_create_nonce('de_track_download_nonce'),
+            'rest_url' => get_rest_url(null, 'docembedder/v1/')
+        ));
         wp_enqueue_style('ppv-public', BPLDE_PLUGIN_DIR . 'build/public.css', array(), BPLDE_VER);
     }
 
@@ -394,6 +420,84 @@ class BPLDocumentEmbedder {
                     wp_set_object_terms($post->ID, $ext, 'ppv_file_type', false);
                 }
             }
+        }
+    }
+
+    public function de_track_download() {
+        check_ajax_referer('de_track_download_nonce', 'nonce');
+        
+        $document_id = isset($_POST['document_id']) ? intval($_POST['document_id']) : 0;
+        if ($document_id > 0) {
+            global $wpdb;
+            
+            // Record in leads table for IP tracking
+            $inserted = $wpdb->insert(
+                $wpdb->prefix . 'docembedder_leads',
+                [
+                    'name' => 'Anonymous',
+                    'email' => 'anonymous@direct.download',
+                    'document_id' => $document_id,
+                    'document_title' => get_the_title($document_id),
+                    'downloaded_at' => current_time('mysql'),
+                    'ip_address' => \PPV\Helper\Functions::get_client_ip()
+                ],
+                ['%s', '%s', '%d', '%s', '%s', '%s']
+            );
+
+            if ($inserted === false) {
+                error_log("DE DEBUG: DB Insert FAILED for Direct Tracking. Error: " . $wpdb->last_error);
+            } else {
+                error_log("DE DEBUG: DB Insert SUCCESS for Direct Tracking. ID: " . $wpdb->insert_id);
+            }
+
+            // Use a custom token instead of a WP nonce to avoid UID-dependency during redirect
+            $ip = \PPV\Helper\Functions::get_client_ip();
+            $token = wp_hash($document_id . '|' . $ip . '|' . 'de_download', 'nonce');
+            
+            $count = (int) get_post_meta($document_id, '_de_download_count', true);
+            update_post_meta($document_id, '_de_download_count', $count + 1);
+            
+            error_log("DE DEBUG: de_track_download called. IP: $ip. Doc: $document_id. Token: $token");
+
+            wp_send_json_success([
+                'count' => $count + 1,
+                'nonce' => $token
+            ]);
+        }
+        wp_send_json_error('Invalid document ID');
+    }
+
+    public function add_stats_metabox() {
+        add_meta_box(
+            'ppv_download_stats',
+            'Download Stats',
+            [$this, 'render_stats_metabox'],
+            'ppt_viewer',
+            'side',
+            'default'
+        );
+    }
+
+    public function render_stats_metabox($post) {
+        global $wpdb;
+        $count = get_post_meta($post->ID, '_de_download_count', true);
+        $leads_table = $wpdb->prefix . 'docembedder_leads';
+        $leads_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $leads_table WHERE document_id = %d", $post->ID));
+        $leads_url = admin_url('edit.php?post_type=ppt_viewer&page=ppv-download-leads&filter_document_id=' . $post->ID);
+        ?>
+        <div class="de-stats-container">
+            <p style="font-size: 14px; margin-bottom: 12px;"><strong>Total Downloads:</strong> <?php echo intval($count); ?></p>
+            <p style="font-size: 14px; margin-bottom: 18px;"><strong>Total Leads:</strong> <?php echo intval($leads_count); ?></p>
+            <a href="<?php echo esc_url($leads_url); ?>" class="button button-primary" style="width: 100%; text-align: center; height: 32px; line-height: 30px;">View Leads</a>
+        </div>
+        <?php
+    }
+
+    public function ensure_table_exists() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'docembedder_leads';
+        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            \BPLDEDocumentEmbedder::activate();
         }
     }
 

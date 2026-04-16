@@ -48,7 +48,8 @@ class SubMenus {
                 'version' => BPLDE_VER,
                 'isPremium' => de_fs()->can_use_premium_code(),
                 'hasPro' => BPLDE_HAS_PRO,
-                'licenseActiveNonce' => wp_create_nonce( 'bPlLicenseActivation' )
+                'licenseActiveNonce' => wp_create_nonce( 'bPlLicenseActivation' ),
+                'exportLeadsNonce' => wp_create_nonce( 'de_export_leads_csv' )
             ] ) ); ?>'
         ></div>
         <?php

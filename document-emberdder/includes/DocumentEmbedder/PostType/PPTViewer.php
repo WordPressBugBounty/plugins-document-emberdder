@@ -117,6 +117,8 @@ class PPTViewer {
             'shortcode'                      => 'Shortcode',
             'taxonomy-ppv_document_tags'     => 'Tags',
             'taxonomy-ppv_file_type'         => 'File Type',
+            'download_count'                 => 'Downloads',
+            'download_leads'                 => 'Download Leads',
             'date'                           => $columns['date'],
         ];
         return $new;
@@ -126,6 +128,14 @@ class PPTViewer {
         switch ( $column_name ) {
             case 'shortcode':
                 echo '<div class="ppv_front_shortcode"><input style="text-align: center; border: none; outline: none; background-color: #2664eb; color: #fff; padding: 4px 10px; border-radius: 3px;" value="[doc id=' . esc_attr($post_id) . ']" ><span class="htooltip">Copy To Clipboard</span></div>';
+                break;
+            case 'download_count':
+                $count = get_post_meta($post_id, '_de_download_count', true);
+                echo '<strong>' . intval($count) . '</strong>';
+                break;
+            case 'download_leads':
+                $leads_link = admin_url('edit.php?post_type=ppt_viewer&page=ppv-download-leads&filter_document_id=' . $post_id);
+                echo '<a href="' . esc_url($leads_link) . '" class="button button-small">View Download Leads</a>';
                 break;
         }
     }

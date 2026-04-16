@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if(!class_exists('CSF')){
+if (!class_exists('CSF')) {
     return;
 }
 
@@ -23,21 +23,21 @@ CSF::createOptions($prefix, [
     'footer_credit' => 'Thanks for being with bPlugins'
 ]);
 
-CSF::createSection( $prefix, array(
-    'title'  => Functions::ppv_pro_title(esc_html__('Dropbox API', 'ppv-pro')),
+CSF::createSection($prefix, array(
+    'title' => Functions::ppv_pro_title(esc_html__('Dropbox API', 'ppv-pro')),
     'fields' => array(
         Functions::upgrade_section(),
         Functions::ppv_lock_field(array(
             'id' => 'dropbox_app_key',
             'type' => 'text',
             'title' => esc_html__('Dropbox App Key', 'ppv-pro'),
-        ), true),
-        
-    )
-) );
+        ), true, true),
 
-CSF::createSection( $prefix, array(
-    'title'  => Functions::ppv_pro_title(esc_html__('Google Drive API', 'ppv-pro')),
+    )
+));
+
+CSF::createSection($prefix, array(
+    'title' => Functions::ppv_pro_title(esc_html__('Google Drive API', 'ppv-pro')),
     'fields' => array(
         Functions::upgrade_section(),
         Functions::ppv_lock_field(array(
@@ -45,18 +45,16 @@ CSF::createSection( $prefix, array(
             'type' => 'text',
             'title' => esc_html__('Google API key', 'ppv-pro'),
             'before' => '<p><a href="https://console.cloud.google.com/" target="_blank">Click Here</a> To Get Google Credentials</p>',
-        ), true),
+        ), false, true),
         Functions::ppv_lock_field(array(
             'id' => 'google_client_id',
             'type' => 'text',
             'title' => esc_html__('Google Client ID', 'ppv-pro'),
         ), true),
-        Functions::ppv_lock_field(array(  
+        Functions::ppv_lock_field(array(
             'id' => 'google_project_number',
             'type' => 'text',
             'title' => esc_html__('Google Project Number', 'ppv-pro'),
         ), true),
     )
-) );
-
-
+));

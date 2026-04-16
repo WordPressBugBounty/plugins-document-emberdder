@@ -5,6 +5,7 @@ class BPLDEDocumentEmbedder {
     public function __construct() {
         add_action('plugins_loaded', [$this, 'load_dependencies'], 5);
 		add_action('admin_notices', [$this, 'upgrade_notice']);
+        add_filter('plugin_action_links_' . plugin_basename(BPLDE__FILE__), [$this, 'add_action_links']);
     }
 
     public function load_dependencies() {
@@ -53,7 +54,34 @@ class BPLDEDocumentEmbedder {
                     </svg></a>
             </div>
         </div>
-       <?php
+        <?php
 		}
 	}
+    
+    public function add_action_links($links) {
+        $help_link = '<a href="' . admin_url('edit.php?post_type=ppt_viewer&page=bplde-dashboard') . '"><span style="color: #f18500; font-weight: 600;">' . __('Help & Demo\'s', 'ppv') . '</span></a>';
+        array_unshift($links, $help_link);
+        return $links;
+    }
+
+    public static function activate() {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'docembedder_leads';
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE $table_name (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            name varchar(100) NOT NULL,
+            email varchar(150) NOT NULL,
+            document_id int(11) NOT NULL,
+            document_title varchar(255) NOT NULL,
+            downloaded_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+            ip_address varchar(45) NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+    }
 }
