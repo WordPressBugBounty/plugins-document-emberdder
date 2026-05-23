@@ -32,16 +32,16 @@
 }
 
 /* ShortCode Column */
-.ppv_front_shortcode input {
+.bplde_front_shortcode input {
   cursor: pointer;
 }
 
-.ppv_front_shortcode {
+.bplde_front_shortcode {
   position: relative;
   display: inline-block;
 }
 
-.ppv_front_shortcode .htooltip {
+.bplde_front_shortcode .htooltip {
   visibility: hidden;
   width: 140px;
   background-color: #555;
@@ -58,7 +58,7 @@
   transition: opacity 0.3s;
 }
 
-.ppv_front_shortcode .htooltip::after {
+.bplde_front_shortcode .htooltip::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -69,7 +69,7 @@
   border-color: #555 transparent transparent transparent;
 }
 
-.ppv_front_shortcode:hover .htooltip {
+.bplde_front_shortcode:hover .htooltip {
   visibility: visible;
   opacity: 1;
 }
@@ -122,17 +122,17 @@
 }
 
 /* Pro Field CSS */
-.ppv-field-title {
+.bplde-field-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.ppv-field-title h4 {
+.bplde-field-title h4 {
   margin: 0;
 }
 
-.ppv-field-title span {
+.bplde-field-title span {
   color: #fff;
   background: #146ef5;
   padding: 3px 10px;
@@ -140,25 +140,25 @@
   height: fit-content;
 }
 /* Opacity rules for lock fields */
-.ppv-lock-field.section:not(.has-doc) {
+.bplde-lock-field.section:not(.has-doc) {
   opacity: 0.5;
 }
 
-.ppv-lock-field:not(.section):not(.has-doc) .csf-fieldset {
+.bplde-lock-field:not(.section):not(.has-doc) .csf-fieldset {
   opacity: 0.5;
 }
 
-.ppv-lock-field.has-doc .csf-title,
-.ppv-lock-field.has-doc .csf-fieldset .csf-before-text,
-.ppv-lock-field.has-doc .csf-fieldset input {
+.bplde-lock-field.has-doc .csf-title,
+.bplde-lock-field.has-doc .csf-fieldset .csf-before-text,
+.bplde-lock-field.has-doc .csf-fieldset input {
   opacity: 0.5;
 }
 
-.csf-field.ppv-lock-field:hover::after {
+.csf-field.bplde-lock-field:hover::after {
   display: block;
 }
 
-.csf-field.ppv-lock-field::before {
+.csf-field.bplde-lock-field::before {
   display: block;
   width: 85%;
   height: 100%;
@@ -170,7 +170,7 @@
   left: 0;
 }
 
-.csf-field.ppv-lock-field::after {
+.csf-field.bplde-lock-field::after {
   display: none;
   content: "";
   width: 85%;
@@ -178,12 +178,12 @@
   position: absolute;
   z-index: 9999999;
 }
-.csf-field.ppv-lock-field.has-doc {
+.csf-field.bplde-lock-field.has-doc {
   opacity: 1 !important;
 }
 
 /* For Documentation link */
-.ppv-doc-link {
+.bplde-doc-link {
   width: fit-content;
   height: fit-content;
   position: absolute;
@@ -202,7 +202,7 @@
   transition: all 0.3s ease;
 }
 
-.ppv-doc-link:hover {
+.bplde-doc-link:hover {
   background: #146ef5;
   color: #fff;
 }
@@ -260,10 +260,12 @@
 }
 
 /* Upgrade Button Design */
-li a:has(.fs-submenu-item.document-emberdder.pricing.upgrade-mode),
-li a:has(.fs-submenu-item.document-emberdder.pricing.upgrade-mode):hover {
-  background-color: #2563eb !important;
-  color: transparent !important;
+.fs-submenu-item.document-emberdder.pricing.upgrade-mode {
+  background:  #8c74fd;
+  border-radius: 3px;
+  color: #fff;
+  display: inline-block;
+  padding: 6px 40px 6px 15px;
 }
 
 .fs-submenu-item.document-emberdder.pricing.upgrade-mode {

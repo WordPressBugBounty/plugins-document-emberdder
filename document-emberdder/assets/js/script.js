@@ -19,7 +19,7 @@
       });
   
       // copy to clipboard
-      $(".ppv_front_shortcode input").on("click", function (e) {
+      $(".bplde_front_shortcode input").on("click", function (e) {
         e.preventDefault();
   
         let shortcode = $(this).parent().find("input")[0];
@@ -29,7 +29,7 @@
         $(this).parent().find(".htooltip").text("Copied Successfully!");
       });
   
-      $(".ppv_front_shortcode input").on("mouseout", function () {
+      $(".bplde_front_shortcode input").on("mouseout", function () {
         $(this).parent().find(".htooltip").text("Copy To Clipboard");
       });
 
