@@ -291,15 +291,14 @@ Please report security bugs found in the source code of the Document Embedder pl
 
 1. Add New Document
 2. Configure Document
-3. Document Library Module
-4. Preview
-5. Preview with Download Button
-6. Lightbox Preview
-7. Add New Library
-8. Preview Document Library
-9. Preview Library Without Filter Options
-10. View Documents In Document Library
-
+3. Gutenberg Block (Document Embed)
+4. Block Preview with Custom PDF Viewer
+5. Lightbox Preview
+6. Download Management
+7. Preview with Toolbar
+8. Document Library Module
+9. View Documents In Document Library
+10. Customizable Document Library
 
 == Changelog ==
 
