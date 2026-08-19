@@ -25,6 +25,12 @@ if (!class_exists('BPLDE_Admin_Assets')) {
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         }
 
+        private function asset_version($relative_path) {
+            $path = BPLDE_PLUGIN_PATH . $relative_path;
+
+            return file_exists($path) ? (string) filemtime($path) : BPLDE_VER;
+        }
+
         public function enqueue_admin_assets($hook) {
             $screen = get_current_screen();
             if (!$screen) {
@@ -48,6 +54,12 @@ if (!class_exists('BPLDE_Admin_Assets')) {
 
                 // Enqueue main style.css
                 wp_enqueue_style('ppv-admin', BPLDE_PLUGIN_DIR . 'assets/css/style.css', array(), BPLDE_VER);
+            }
+
+            // 1b. Live preview on the document edit screen only.
+            if ($screen->post_type === 'ppt_viewer' && $screen->base === 'post' && class_exists('BPLDE_Preview')) {
+                wp_enqueue_script('bplde-preview', BPLDE_PLUGIN_DIR . 'assets/js/preview.js', array('jquery'), $this->asset_version('assets/js/preview.js'), true);
+                wp_localize_script('bplde-preview', 'bpldePreview', \BPLDE_Preview::script_data());
             }
 
             // 2. Enqueue Admin Dashboard Page
@@ -89,6 +101,8 @@ if (!class_exists('BPLDE_Admin_Assets')) {
                     'athorName' => $nickname,
                     'adminUrl' => admin_url(),
                     'nonce' => wp_create_nonce('bplde_nonce'),
+                    // Used by the library preview modal to load the bundled pdf.js viewer.
+                    'pluginUrl' => BPLDE_PLUGIN_DIR,
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                     'postId' => isset($_GET['post']) ? intval($_GET['post']) : 0,
                 ]);
@@ -118,18 +132,23 @@ if (!class_exists('BPLDE_Admin_Assets')) {
                     'athorName' => $nickname,
                     'adminUrl' => admin_url(),
                     'nonce' => wp_create_nonce('bplde_nonce'),
+                    // Used by the library preview modal to load the bundled pdf.js viewer.
+                    'pluginUrl' => BPLDE_PLUGIN_DIR,
                 ]);
             }
 
             // 5. Enqueue Leads Page Inline Styles
             if ($hook === 'ppt_viewer_page_bplde-download-leads') {
                 wp_add_inline_style('wp-admin', '
-                    .bplde-custom-table-container { 
-                        margin-top: 20px; 
-                        background: #fff; 
-                        border: 0; 
-                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
-                        border-radius: 8px;
+                    .bplde-custom-table-container,
+                    .bplde-custom-table-container * {
+                        border-radius: 0 !important;
+                    }
+                    .bplde-custom-table-container {
+                        margin-top: 20px;
+                        background: #fff;
+                        border: 0;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
                         padding: 24px;
                     }
                     .bplde-header-actions { 
@@ -147,11 +166,11 @@ if (!class_exists('BPLDE_Admin_Assets')) {
                         display: inline-flex; 
                         align-items: center; 
                         justify-content: center; 
-                        height: 38px; 
-                        padding: 0 18px; 
-                        border-radius: 6px; 
-                        font-weight: 500; 
-                        font-size: 13px; 
+                        height: 38px;
+                        padding: 0 18px;
+                        border-radius: 0;
+                        font-weight: 500;
+                        font-size: 13px;
                         text-decoration: none; 
                         cursor: pointer; 
                         transition: all 0.2s ease; 
@@ -224,7 +243,7 @@ if (!class_exists('BPLDE_Admin_Assets')) {
                     }
                     .bplde-input {
                         height: 38px;
-                        border-radius: 6px;
+                        border-radius: 0;
                         border: 1px solid #d1d5db;
                         padding: 0 12px;
                         font-size: 13px;
@@ -286,12 +305,12 @@ if (!class_exists('BPLDE_Admin_Assets')) {
                         justify-content: center;
                         min-width: 32px;
                         height: 32px;
-                        padding: 0 8px; 
-                        border: 1px solid #e5e7eb; 
-                        background: #fff; 
-                        border-radius: 6px; 
-                        text-decoration: none; 
-                        color: #4b5563; 
+                        padding: 0 8px;
+                        border: 1px solid #e5e7eb;
+                        background: #fff;
+                        border-radius: 0;
+                        text-decoration: none;
+                        color: #4b5563;
                         font-size: 13px;
                         font-weight: 500;
                         transition: all 0.2s ease;

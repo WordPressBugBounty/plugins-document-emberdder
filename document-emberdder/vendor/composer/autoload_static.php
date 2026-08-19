@@ -27,6 +27,7 @@ class ComposerStaticInitb0ba350524ce23c72242fb5b8ccdf27e
         'BPLDE_Document_Library_CPT' => __DIR__ . '/../..' . '/includes/admin/class-bplde-document-library.php',
         'BPLDE_Functions' => __DIR__ . '/../..' . '/includes/class-bplde-functions.php',
         'BPLDE_Metabox_Free' => __DIR__ . '/../..' . '/includes/admin/class-bplde-metabox-free.php',
+        'BPLDE_Preview' => __DIR__ . '/../..' . '/includes/admin/class-bplde-preview.php',
         'BPLDE_Settings_Free' => __DIR__ . '/../..' . '/includes/admin/class-bplde-settings-free.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );

@@ -22,6 +22,7 @@ return array(
     'BPLDE_Document_Library_CPT' => $baseDir . '/includes/admin/class-bplde-document-library.php',
     'BPLDE_Functions' => $baseDir . '/includes/class-bplde-functions.php',
     'BPLDE_Metabox_Free' => $baseDir . '/includes/admin/class-bplde-metabox-free.php',
+    'BPLDE_Preview' => $baseDir . '/includes/admin/class-bplde-preview.php',
     'BPLDE_Settings_Free' => $baseDir . '/includes/admin/class-bplde-settings-free.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
 );

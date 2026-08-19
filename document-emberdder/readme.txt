@@ -1,19 +1,19 @@
-=== Document Embedder – Embed PDFs, Word, Excel, and Other Files ===
+=== Document Embedder – let visitors read files without downloading ===
 Contributors: bplugins, abuhayat, shehabulislam, taninrahman, farazi1, freemius
 Tags: document embedder, embed pdf, embed any document, pdf embedder, document library
-Requires at least: 6.5
 Tested up to: 7.0
-Stable tag: 2.2.1
+Stable tag: 2.3.0
 Requires PHP: 7.1
+Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Document Embedder lets you display PDF, DOCX, PPTX, XLSX, and other files in WordPress sites with a responsive viewer and optional download button.
+Embed PDF, Word, Excel, PowerPoint and 16+ file types in WordPress with a responsive viewer, FlipBook mode, download button and document library.
 
 == Description ==
-**Embed Any Document Instantly with the #1 No-Code Plugin – Trusted by 10,000+ WordPress Sites**
 
+**Let visitors read your PDFs, Word docs, spreadsheets, and presentations right on the page – no downloads, no leaving your site.**
 
 [**Document Embedder**](https://bplugins.com/products/document-embedder/) | [**Documentation**](https://bplugins.com/docs/document-embedder/getting-started/) | [**Pricing**](https://bplugins.com/products/document-embedder/pricing) | [**Support**](https://bplugins.com/support/) | [**Demo**](https://bplugins.com/products/document-embedder/#demos)
 
@@ -34,6 +34,8 @@ This plugin is ideal for sharing reports, presentations, worksheets, guides, and
 
 - **Responsive Viewer:** Adjust **width and height** to fit any layout — with independent controls for Desktop, Tablet, and Mobile.
 
+- **Live Preview While You Edit:** See exactly how the document will look to visitors, right on the edit screen, before you save anything.
+
 - **Filename Display:** Show the document title at the top for clarity.
 
 - **Download Button:** Easily allow users to download PDFs with a customizable button label (e.g., "Get Copy," "Save PDF").
@@ -44,9 +46,11 @@ This plugin is ideal for sharing reports, presentations, worksheets, guides, and
 
 - **Custom Download Filename:** Define the exact filename shown to users when they download the file.
 
+- **Download Counter & Limits:** Show how many times a file has been downloaded, and cap downloads per visitor.
+
 - **Gutenberg Block Support:** Use the native **Document Embed block** in the WordPress Block Editor (Gutenberg) to insert, upload, and configure documents with a real-time live preview.
 
-- **Simple Shortcode Embedding:** Prefer the Classic Editor or page builders? Use the `[embed_doc]` shortcode to place documents anywhere on your site.
+- **Simple Shortcode Embedding:** Prefer the Classic Editor or page builders? Use the `[doc id="123"]` shortcode to place documents anywhere on your site — Elementor, Divi, Bricks, WPBakery, Beaver Builder, Oxygen, Breakdance, and more.
 
 - **Dedicated Post Type:** Manage all your documents individually using the `ppt_viewer` custom post type.
 
@@ -80,13 +84,25 @@ Upgrade to [**Document Embedder Pro**](https://bplugins.com/products/document-em
 
 **What's Included in Pro:**
 
-- **Advanced Customizations for Viewer Engines:** Lock/unlock full-screen mode, customize the initial page number, define default zoom level, set horizontal scrollbars, load the latest document version automatically, or set default sidebar/thumbnail visibility.
+- **Secure Email Gate for Downloads:** Require visitors to submit Name and Email before they can download a document. Turn any file into a lead magnet.
+
+- **Leads Dashboard & CSV Export:** Every submission is logged to a searchable, filterable dashboard you can export as CSV in one click.
+
+- **View Access Control:** Show a document only to logged-in users or to specific user roles, with your own message for everyone else. Restricted visitors never receive the file link at all.
+
+- **Secure Document Delivery:** Serve local PDFs through a signed, expiring, IP-bound link instead of exposing the file URL in your page.
+
+- **Download Access Control:** Limit downloads to logged-in users only, or restrict them by specific user roles.
+
+- **Interactive Overlays:** Place notes, highlights, links, and call-to-action buttons on any page of a PDF. Positions are percentage based, so they stay aligned at any zoom level.
+
+- **Lightbox Display:** Open documents in a modal popup — triggered by a styled button, an image, or any element on your page.
 
 - **Custom Toolbar Themes & Color Customizer:** Style your toolbar with Dark, Light, or fully Custom colors.
 
-- **Disable Popout Option:** Prevent users from opening documents in a new window.
+- **Advanced Customizations for Viewer Engines:** Reader Mode, thumbnail sidebar, full-screen button (in place or in a new tab), custom initial page and default zoom, horizontal scrollbar, and automatic loading of the latest file version.
 
-- **Lightbox Display:** Open documents in a modal window for smoother UX.
+- **Disable Popout Option:** Prevent users from opening documents in a new window.
 
 - **Loading Indicator:** Show a spinner until the document fully loads.
 
@@ -94,17 +110,9 @@ Upgrade to [**Document Embedder Pro**](https://bplugins.com/products/document-em
 
 - **Dropbox Integration:** Access and embed files from Dropbox easily.
 
-- **Enhanced Content Security & Copy Protection:** Disable text selection/copying, right-click, or printing on your embedded files to protect your content.
-
-- **Download Access Control & Restrictions:** Limit downloads to Logged-in Users only, or restrict by specific User Roles.
-
-- **Secure Email Gate for PDF Downloads:** Require visitors to submit Name and Email before they can download a document. Turn any file into a lead magnet.
-
-- **Download Tracking & IP Limits:** Record total download counts and set per-IP download limits.
+- **Faster Pages:** Lazy load embeds until a visitor scrolls to them, render long PDFs page by page, and fall back automatically if the Google viewer fails to answer.
 
 - **Premium Customer Support:** Priority help and expert assistance.
-
-- **Fluid & Fast Document Rendering:** Optimized rendering engine for faster loading times.
 
 **Document Library Module**
 
@@ -291,19 +299,28 @@ Please report security bugs found in the source code of the Document Embedder pl
 
 == Screenshots ==
 
-1. Add New Document
-2. Configure Document
-3. Document Library Module
-4. Preview
-5. Preview with Download Button
-6. Lightbox Preview
-7. Add New Library
-8. Preview Document Library
-9. Preview Library Without Filter Options
-10. View Documents In Document Library
+1. Embed any document, right on the page — PDF, Word, Excel, PowerPoint and 16+ more formats — read inline, never leave your site.
+2. Four viewer engines. All free. — Google Viewer, high-performance PDF.js, 3D FlipBook or Slideshow — switch with one click.
+3. Read it like a real magazine — An interactive 3D FlipBook with true page-turn animation — built in, no add-on needed.
+4. A searchable library of every file — Search, filter and sort your documents, with view and download buttons on every card.
+5. Insert it with one block — A native Gutenberg block with every control in the sidebar — or the [doc] shortcode anywhere.
+6. Every control on one screen — Viewer, toolbar, downloads, access, overlays and a live preview — without leaving the editor.
+7. Turn any download into a lead (Pro) — Ask for a name and email before the file is released.
+8. Every lead, logged and exportable (Pro) — Search, filter by date or document, and export the whole list to CSV in one click.
+9. Pin notes, links and CTAs on a page (Pro) — Percentage-based positions keep every overlay aligned at any zoom level.
+10. Lock a document to the right people (Pro) — Restrict the viewer by login or role — blocked visitors never receive the file URL at all.
 
 
 == Changelog ==
+
+= 2.3.0 - 19 August 2026 =
+* **New:** Complete overhaul of the Access and Security settings module, delivering advanced protection controls with an intuitive interface for all users.
+* **New:** Interactive Overlays settings introduced to seamlessly place annotations, links, and actionable elements directly on your documents.
+* **New:** Real-time Live Preview capability integrated into the Classic Editor, allowing instant visualization of document embeds before publishing.
+* **Update:** Enhanced clarity across all settings by revising and optimizing informative note fields throughout the plugin.
+* **Update:** Added two new dedicated utility metaboxes to the Classic Editor sidebox for streamlined document configuration.
+* **Update:** Refreshed the Pro feature list modal to accurately reflect the latest premium capabilities and enhancements.
+* **Fix:** Integrated a high-performance Custom PDF viewer into the Document Library module, completely resolving intermittent loading failures caused by the default Google Viewer.
 
 = 2.2.1 - 22 July 2026 =
 * **New:** View PDFs in Full-Screen Mode for a more comfortable reading experience.
