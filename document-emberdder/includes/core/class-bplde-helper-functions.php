@@ -111,5 +111,153 @@ if (!class_exists('Functions')) {
 
             return trim($ipaddress);
         }
+
+        /**
+         * Neutralises spreadsheet formula injection in exported lead data.
+         *
+         * Name and email arrive from a public form, and the export is opened by an admin in
+         * Excel or Sheets, where a leading =, +, - or @ is evaluated as a formula.
+         *
+         * @param mixed $value Raw field value.
+         * @return mixed
+         */
+        public static function escape_csv_field($value)
+        {
+            if (is_string($value) && '' !== $value && in_array($value[0], array('=', '+', '-', '@', "\t", "\r"), true)) {
+                return "'" . $value;
+            }
+
+            return $value;
+        }
+
+        /**
+         * Whether the current request is allowed to resolve a document by ID.
+         *
+         * Every public entry point that turns a request-supplied ID into a file has to ask
+         * this first. A download token only proves the plugin issued the URL, never that the
+         * holder is entitled to the document, so authorization belongs here, at the point the
+         * ID enters, rather than at the point the file is streamed.
+         *
+         * Three different kinds of ID legitimately arrive here, and the rule differs per kind:
+         *
+         *  - ppt_viewer / document_library / ordinary posts. These are addressable content,
+         *    and their IDs are sequential and guessable, so an unpublished one must never be
+         *    resolvable by an anonymous visitor. This is the case the security report covers.
+         *  - Attachments. The document-embed block stores the media ID (docId: media.id), so
+         *    this is the common path. Judged on the attachment's own status only, deliberately
+         *    ignoring the parent's: media uploaded while editing one post is routinely embedded
+         *    in another, and the parent is often an unrelated draft. Nothing leaks by allowing
+         *    it, because the webserver already serves that exact file at its public upload URL
+         *    without consulting WordPress at all.
+         *  - The containing page, via the render.php get_the_ID() fallback for older embeds.
+         *    Covered by the published-post rule.
+         *
+         * @param int $document_id Post, attachment, or document ID from the request.
+         * @return bool
+         */
+        public static function can_read_document($document_id)
+        {
+            $document_id = (int) $document_id;
+
+            if ($document_id <= 0) {
+                return false;
+            }
+
+            $post = get_post($document_id);
+
+            if (!$post) {
+                return false;
+            }
+
+            if (current_user_can('read_post', $post->ID)) {
+                // Author, editor, or admin of this document: always allowed.
+                $allowed = true;
+            } elseif ('attachment' === $post->post_type) {
+                // Raw post_status on purpose. get_post_status() resolves an attachment's
+                // "inherit" to the parent's status, which would deny a file that happens to
+                // hang off a draft post but is embedded on a published one -- a routine
+                // result of uploading media from inside one post and reusing it in another.
+                $allowed = in_array($post->post_status, array('inherit', 'publish'), true);
+            } else {
+                $allowed = ('publish' === get_post_status($post)) && !post_password_required($post);
+            }
+
+            /**
+             * Filters whether a document may be resolved by the current request.
+             *
+             * Escape hatch for sites that deliberately expose an unpublished document to
+             * anonymous visitors. Off by default: the safe answer is the default answer.
+             *
+             * @param bool     $allowed     Whether the request is authorized.
+             * @param int      $document_id The requested document ID.
+             * @param \WP_Post $post        The resolved post object.
+             */
+            return (bool) apply_filters('bplde_can_read_document', $allowed, $document_id, $post);
+        }
+
+        /**
+         * How long an issued download token stays valid.
+         *
+         * @return int Seconds.
+         */
+        public static function download_token_ttl()
+        {
+            /**
+             * Filters the download token lifetime.
+             *
+             * @param int $ttl Seconds. Defaults to 12 hours.
+             */
+            return (int) apply_filters('bplde_download_token_ttl', 12 * HOUR_IN_SECONDS);
+        }
+
+        /**
+         * Issues a download token for a document.
+         *
+         * Returned as "<timestamp>.<hash>" with the timestamp inside the signed material, so
+         * the token carries its own expiry and cannot be back-dated. The compound string is
+         * passed straight through as the de_nonce query arg by the existing front-end code,
+         * which needs no change to keep working.
+         *
+         * @param int $document_id Document ID the token is issued for.
+         * @param int $timestamp   Issue time; defaults to now. Pass the embedded value to verify.
+         * @return string
+         */
+        public static function create_download_token($document_id, $timestamp = 0)
+        {
+            $timestamp = $timestamp ? (int) $timestamp : time();
+            $ip        = self::get_client_ip();
+
+            return $timestamp . '.' . wp_hash((int) $document_id . '|' . $ip . '|' . $timestamp . '|de_download', 'nonce');
+        }
+
+        /**
+         * Verifies a download token against a document.
+         *
+         * @param string $token       Token from the request.
+         * @param int    $document_id Document ID being requested.
+         * @return bool
+         */
+        public static function verify_download_token($token, $document_id)
+        {
+            if (!is_string($token) || false === strpos($token, '.')) {
+                return false;
+            }
+
+            list($timestamp, $hash) = explode('.', $token, 2);
+
+            if ('' === $hash || !ctype_digit($timestamp)) {
+                return false;
+            }
+
+            $age = time() - (int) $timestamp;
+
+            // Reject expired tokens, and anything dated more than a few minutes ahead of the
+            // server clock, which would otherwise extend the window indefinitely.
+            if ($age > self::download_token_ttl() || $age < -(5 * MINUTE_IN_SECONDS)) {
+                return false;
+            }
+
+            return hash_equals(self::create_download_token($document_id, (int) $timestamp), $token);
+        }
     }
 }

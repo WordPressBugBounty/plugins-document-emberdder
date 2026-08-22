@@ -28,14 +28,17 @@ if ( ! class_exists( RESTController::class ) ) {
                 }
             ] );
 
-            // Gated download endpoint
+            // Gated download endpoint. Public by design -- it backs the lead-capture form
+            // that anonymous visitors submit -- so the permission callback cannot carry the
+            // authorization. The handler checks the requested document itself instead.
             register_rest_route( 'docembedder/v1', '/gate-download', [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'handle_gate_download'],
                 'permission_callback' => '__return_true'
             ] );
-            
-            // Direct/secure download endpoint
+
+            // Direct/secure download endpoint. Also reachable anonymously, for documents on
+            // public pages; authorization is per-document inside the handler.
             register_rest_route( 'docembedder/v1', '/download/(?P<id>\d+)', [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handle_direct_download'],
@@ -75,6 +78,14 @@ if ( ! class_exists( RESTController::class ) ) {
 
             $email = sanitize_email( $raw_email );
 
+            // Authorize the document before anything else touches it. This route takes no
+            // nonce at all, so without this check it hands a signed download URL for any ID
+            // to any anonymous caller. Deliberately indistinguishable from a missing
+            // document, so it cannot be used to probe which IDs exist.
+            if ( ! \BPLDE\Helper\Functions::can_read_document( $document_id ) ) {
+                return new \WP_REST_Response( ['success' => false, 'message' => 'Document not found.'], 404 );
+            }
+
             // Verify access restrictions
             $meta = get_post_meta( $document_id, 'ppv', true );
             $access = isset( $meta['_de_download_access'] ) ? $meta['_de_download_access'] : '';
@@ -97,7 +108,7 @@ if ( ! class_exists( RESTController::class ) ) {
 
             // Insert into db
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- direct insert to custom table
-            $inserted = $wpdb->insert(
+            $wpdb->insert(
                 $wpdb->prefix . 'docembedder_leads',
                 [
                     'name'           => $name,
@@ -110,26 +121,20 @@ if ( ! class_exists( RESTController::class ) ) {
                 ['%s', '%s', '%d', '%s', '%s', '%s']
             );
 
-            if ( $inserted === false ) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( "DE DEBUG: DB Insert FAILED for Gated Download. Error: " . $wpdb->last_error );
-            } else {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( "DE DEBUG: DB Insert SUCCESS for Gated Download. ID: " . $wpdb->insert_id );
-            }
-
             // Increment count
             $count = (int) get_post_meta( $document_id, '_de_download_count', true );
             update_post_meta( $document_id, '_de_download_count', $count + 1 );
 
             // Generate signed, time-limited URL
             $timestamp = time();
-            $ip        = \BPLDE\Helper\Functions::get_client_ip();
-            $nonce     = wp_hash( $document_id . '|' . $ip . '|' . 'de_download', 'nonce' );
+            $nonce     = \BPLDE\Helper\Functions::create_download_token( $document_id, $timestamp );
             $url       = rest_url( "docembedder/v1/download/{$document_id}?de_nonce={$nonce}&t={$timestamp}" );
 
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-            error_log( "DE DEBUG: Gated download link generated: $url for IP: " . \BPLDE\Helper\Functions::get_client_ip() );
+            // Carry the caller's REST identity across to the download route, so a logged-in
+            // user keeps their capabilities there. Anonymous callers get the URL unchanged.
+            if ( is_user_logged_in() ) {
+                $url = add_query_arg( '_wpnonce', wp_create_nonce( 'wp_rest' ), $url );
+            }
 
             return new \WP_REST_Response( ['success' => true, 'url' => $url], 200 );
         }
@@ -137,9 +142,15 @@ if ( ! class_exists( RESTController::class ) ) {
         public function handle_direct_download( \WP_REST_Request $request ) {
             $document_id = intval( $request->get_param( 'id' ) );
             $nonce       = $request->get_param( 'de_nonce' );
-            $timestamp   = $request->get_param( 't' );
-            $is_gate     = ! empty( $timestamp );
             $ip          = \BPLDE\Helper\Functions::get_client_ip();
+
+            // Authorize the document before the token is even considered. A valid token only
+            // proves this plugin minted the URL; it says nothing about whether the holder is
+            // entitled to the file, so the document check has to come first and has to stand
+            // on its own.
+            if ( ! \BPLDE\Helper\Functions::can_read_document( $document_id ) ) {
+                return new \WP_REST_Response( 'Not found', 404 );
+            }
 
             // Verify access restrictions
             $meta = get_post_meta( $document_id, 'ppv', true );
@@ -160,10 +171,7 @@ if ( ! class_exists( RESTController::class ) ) {
             }
 
             // Token Verification (UID-independent)
-            $expected_token = wp_hash( $document_id . '|' . $ip . '|' . 'de_download', 'nonce' );
-            if ( ! hash_equals( $expected_token, $nonce ) ) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( "DE DEBUG: Token verification failed for doc: $document_id. Expected: $expected_token. Received: $nonce. IP: $ip" );
+            if ( ! \BPLDE\Helper\Functions::verify_download_token( $nonce, $document_id ) ) {
                 return new \WP_REST_Response( 'Forbidden - Invalid Token', 403 );
             }
 
@@ -178,9 +186,7 @@ if ( ! class_exists( RESTController::class ) ) {
                     $ip
                 ) );
 
-                if ( (int) $downloaded_count > (int) $limit ) { 
-                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                    error_log( "DE DEBUG: API limit reached. IP: $ip, Count: $downloaded_count, Limit: $limit" );
+                if ( (int) $downloaded_count > (int) $limit ) {
                     return new \WP_REST_Response( 'Download limit reached.', 403 );
                 }
             }
@@ -197,7 +203,9 @@ if ( ! class_exists( RESTController::class ) ) {
             }
 
             $attachment_id = attachment_url_to_postid( $doc_url );
-            if ( ! $attachment_id && wp_attachment_is_file( $document_id ) ) {
+            if ( ! $attachment_id && 'attachment' === get_post_type( $document_id ) ) {
+                // Fall back to the requested ID when the stored URL does not resolve to a
+                // media item -- the document-embed block stores the attachment ID directly.
                 $attachment_id = $document_id;
             }
 
@@ -244,6 +252,16 @@ if ( ! class_exists( RESTController::class ) ) {
                 $custom_filename = isset( $data_array['_de_download_filename'] ) ? $data_array['_de_download_filename'] : '';
             }
             $filename = ! empty( $custom_filename ) ? $custom_filename : basename( $file_path );
+
+            // The filename arrives from the query string and goes straight into a response
+            // header. esc_attr() does not remove CR/LF, so strip control characters and
+            // quotes here. Nothing else is rewritten, so ordinary filenames -- spaces and
+            // all -- reach the browser exactly as before.
+            $filename = preg_replace( '/[\x00-\x1F\x7F"\\\\]/', '', $filename );
+
+            if ( '' === trim( $filename ) ) {
+                $filename = basename( $file_path );
+            }
             
             $behavior_param = $request->get_param( 'behavior' );
             if ( ! empty( $behavior_param ) ) {

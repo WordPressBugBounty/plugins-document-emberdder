@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Document Embedder – Embed PDFs, Word, Excel, and Other Files 2.3.0\n"
+"Project-Id-Version: Document Embedder – Embed PDFs, Word, Excel, and Other Files 2.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/document-emberdder\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T12:11:16+00:00\n"
+"POT-Creation-Date: 2026-08-22T08:10:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: document-emberdder\n"
@@ -457,67 +457,67 @@ msgstr ""
 msgid "Help & Demo's"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:177
+#: includes/core/class-bplde-document-embedder.php:184
 msgid "Page Builder Support"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:188
+#: includes/core/class-bplde-document-embedder.php:195
 msgid "Document Embedder Pro"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:240
+#: includes/core/class-bplde-document-embedder.php:247
 msgid "Email-gated downloads"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:241
+#: includes/core/class-bplde-document-embedder.php:248
 msgid "Interactive overlays on any page"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:242
+#: includes/core/class-bplde-document-embedder.php:249
 msgid "Print, copy and right-click protection"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:243
+#: includes/core/class-bplde-document-embedder.php:250
 msgid "Access limited by user role"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:244
+#: includes/core/class-bplde-document-embedder.php:251
 msgid "Google Drive and Dropbox embeds"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:245
+#: includes/core/class-bplde-document-embedder.php:252
 msgid "Toolbar themes, zoom and lightbox"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:251
+#: includes/core/class-bplde-document-embedder.php:258
 #: includes/core/class-bplde-helper-functions.php:62
 msgid "Pro Version"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:253
+#: includes/core/class-bplde-document-embedder.php:260
 msgid "Where the free version stops"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:256
+#: includes/core/class-bplde-document-embedder.php:263
 msgid "Six settings the free version keeps locked:"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:266
+#: includes/core/class-bplde-document-embedder.php:273
 #: includes/core/class-bplde-helper-functions.php:73
 msgid "See Pro pricing"
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:270
+#: includes/core/class-bplde-document-embedder.php:277
 msgid "14-day refund policy"
 msgstr ""
 
 #. translators: %s is a comma-separated list of page builder names.
-#: includes/core/class-bplde-document-embedder.php:294
+#: includes/core/class-bplde-document-embedder.php:301
 #, php-format
 msgid "Paste the shortcode above into %s or any other builder."
 msgstr ""
 
-#: includes/core/class-bplde-document-embedder.php:299
+#: includes/core/class-bplde-document-embedder.php:306
 msgid "Fully compatible"
 msgstr ""
 
@@ -891,39 +891,39 @@ msgstr ""
 msgid "Preview is not available for dropbox"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:288
+#: src/blocks/document-embed/components/Common/Viewer.js:292
 msgid "Open in new tab"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:289
+#: src/blocks/document-embed/components/Common/Viewer.js:293
 msgid "Full screen"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:375
+#: src/blocks/document-embed/components/Common/Viewer.js:379
 msgid "Preview temporarily unavailable."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:382
+#: src/blocks/document-embed/components/Common/Viewer.js:386
 msgid "Download"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:533
+#: src/blocks/document-embed/components/Common/Viewer.js:537
 msgid "No document added yet"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:534
+#: src/blocks/document-embed/components/Common/Viewer.js:538
 msgid "Document unavailable"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:539
+#: src/blocks/document-embed/components/Common/Viewer.js:543
 msgid "Upload a file from your Media Library or paste a document link in the settings, and it will appear here."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:543
+#: src/blocks/document-embed/components/Common/Viewer.js:547
 msgid "No document has been added to this embed yet."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:551
+#: src/blocks/document-embed/components/Common/Viewer.js:555
 msgid "Document Configuration → General → Document File"
 msgstr ""
 

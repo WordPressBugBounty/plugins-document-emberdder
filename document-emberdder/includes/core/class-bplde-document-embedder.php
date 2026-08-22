@@ -67,6 +67,13 @@ if (!class_exists('BPLDE_Document_Embedder')) {
             wp_localize_script('ppv-public', 'bplde_obj', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'track_nonce' => wp_create_nonce('de_track_download_nonce'),
+                // Cookie authentication on a REST route is only honoured when a wp_rest
+                // nonce comes with it, so without this a logged-in editor is seen as
+                // anonymous by the download route and cannot fetch their own unpublished
+                // document. Emitted for logged-in users only, and deliberately so: an
+                // expired nonce makes WordPress reject the request outright, which would
+                // turn a cached page into a broken download for anonymous visitors.
+                'rest_nonce' => is_user_logged_in() ? wp_create_nonce('wp_rest') : '',
                 'rest_url' => get_rest_url(null, 'docembedder/v1/')
             ));
             wp_enqueue_style('ppv-public', BPLDE_PLUGIN_DIR . 'build/public.css', array(), BPLDE_VER);

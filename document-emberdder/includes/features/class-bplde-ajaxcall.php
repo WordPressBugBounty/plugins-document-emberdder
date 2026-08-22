@@ -71,7 +71,7 @@ if ( ! class_exists( 'AJAXCall' ) ) {
             fputcsv( $output, ['ID', 'Name', 'Email', 'Document ID', 'Document Title', 'Downloaded At', 'IP Address'] );
 
             foreach ( $leads as $lead ) {
-                fputcsv( $output, $lead );
+                fputcsv( $output, array_map( [Functions::class, 'escape_csv_field'], $lead ) );
             }
 
             // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- php://output has no WP_Filesystem equivalent
@@ -227,12 +227,19 @@ if ( ! class_exists( 'AJAXCall' ) ) {
             check_ajax_referer( 'de_track_download_nonce', 'nonce' );
             
             $document_id = isset( $_POST['document_id'] ) ? intval( $_POST['document_id'] ) : 0;
-            if ( $document_id > 0 ) {
+
+            // The nonce above is CSRF protection only. It is printed for every visitor,
+            // including anonymous ones, so it says nothing about who is asking or what they
+            // are entitled to -- the document itself has to be checked before a token is
+            // issued for it. Unauthorized IDs fall through to the existing "Invalid document
+            // ID" response, which the front end already handles by downloading the embedded
+            // file directly, so a legitimate visitor sees no change.
+            if ( $document_id > 0 && Functions::can_read_document( $document_id ) ) {
                 global $wpdb;
                 
                 // Record in leads table for IP tracking
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- direct insert to custom table
-                $inserted = $wpdb->insert(
+                $wpdb->insert(
                     $wpdb->prefix . 'docembedder_leads',
                     [
                         'name'           => 'Anonymous',
@@ -245,23 +252,12 @@ if ( ! class_exists( 'AJAXCall' ) ) {
                     ['%s', '%s', '%d', '%s', '%s', '%s']
                 );
 
-                if ( $inserted === false ) {
-                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                    error_log( "DE DEBUG: DB Insert FAILED for Direct Tracking. Error: " . $wpdb->last_error );
-                } else {
-                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                    error_log( "DE DEBUG: DB Insert SUCCESS for Direct Tracking. ID: " . $wpdb->insert_id );
-                }
-
-                // Use a custom token instead of a WP nonce to avoid UID-dependency during redirect
-                $ip = Functions::get_client_ip();
-                $token = wp_hash( $document_id . '|' . $ip . '|' . 'de_download', 'nonce' );
+                // A custom token rather than a WP nonce, to stay UID-independent across the
+                // redirect. Carries its own issue time so it expires; see create_download_token().
+                $token = Functions::create_download_token( $document_id );
 
                 $count = (int) get_post_meta( $document_id, '_de_download_count', true );
                 update_post_meta( $document_id, '_de_download_count', $count + 1 );
-
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log( "DE DEBUG: de_track_download called. IP: $ip. Doc: $document_id. Token: $token" );
 
                 wp_send_json_success( [
                     'count' => $count + 1,

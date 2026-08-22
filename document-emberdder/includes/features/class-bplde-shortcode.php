@@ -160,11 +160,6 @@ if (!class_exists('Shortcode')) {
                 if ((int) $downloaded_count >= $limit) {
                     $result['limit_reached'] = true;
                 }
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log("DE DEBUG: Limit Check for ID $id. IP: $ip, Count: $downloaded_count, Limit: $limit, Reached: " . ($result['limit_reached'] ? 'YES' : 'NO'));
-            } else {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                error_log("DE DEBUG: Limit Check for ID $id SKIPPED (Limit is 0)");
             }
 
             $result = apply_filters('bplde_doc_data', $result, $id);

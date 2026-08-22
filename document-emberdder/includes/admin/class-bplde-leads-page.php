@@ -115,7 +115,7 @@ if ( ! class_exists( 'LeadsPage' ) ) {
                 fputcsv( $output, ['ID', 'Name', 'Email', 'Document ID', 'Document Title', 'Downloaded At', 'IP Address'] );
 
                 foreach ( $leads as $lead ) {
-                    fputcsv( $output, $lead );
+                    fputcsv( $output, array_map( ['\BPLDE\Helper\Functions', 'escape_csv_field'], $lead ) );
                 }
 
                 // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- php://output has no WP_Filesystem equivalent
