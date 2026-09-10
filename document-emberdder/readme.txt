@@ -1,5 +1,5 @@
 === Document Embedder – let visitors read files without downloading ===
-Contributors: bplugins, abuhayat, shehabulislam, taninrahman, farazi1, freemius
+Contributors: bplugins, abuhayat, taninrahman, farazi1, freemius
 Tags: document embedder, embed pdf, embed any document, pdf embedder, document library
 Tested up to: 7.0
 Stable tag: 2.3.1
