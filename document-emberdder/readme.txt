@@ -1,8 +1,8 @@
 === Document Embedder – let visitors read files without downloading ===
-Contributors: bplugins, abuhayat, taninrahman, farazi1, freemius
+Contributors: bplugins, abuhayat, shehabulislam, taninrahman, farazi1, freemius
 Tags: document embedder, embed pdf, embed any document, pdf embedder, document library
-Tested up to: 7.0
-Stable tag: 2.3.1
+Tested up to: 7.1
+Stable tag: 2.4.0
 Requires PHP: 7.1
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat/
@@ -312,6 +312,9 @@ Please report security bugs found in the source code of the Document Embedder pl
 
 
 == Changelog ==
+
+= 2.4.0 - 7 October 2026 =
+* **Improvement:** Redesigned the admin experience to be much cleaner and easier to understand.
 
 = 2.3.1 - 22 August 2026 =
 * **Security:** Strengthened permission checks for document downloads. All users are encouraged to update. Reported by Vaibhav Narkhede.
