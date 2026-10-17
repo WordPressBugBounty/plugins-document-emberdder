@@ -15,6 +15,10 @@ if ( ! empty( $attributes['selectedPostId'] ) ) {
         if ( empty( $bplde_form_data ) ) {
             $bplde_form_data = [];
         }
+        // Libraries saved before 2.4.1 may still hold script URLs.
+        if ( class_exists( '\BPLDE\Helper\Functions' ) ) {
+            $bplde_form_data = \BPLDE\Helper\Functions::strip_unsafe_urls( $bplde_form_data, [ 'url' ] );
+        }
     }
 }
 

@@ -133,6 +133,56 @@ if (!class_exists('Functions')) {
         }
 
         /**
+         * Whether a URL would run script when the browser follows it.
+         *
+         * Block attributes and library settings are JSON, which WordPress's kses filtering
+         * never looks inside, so a contributor can store "javascript:..." as a document URL
+         * and the viewer will hand it to an anchor, a new tab or an iframe. Browsers drop
+         * whitespace and control characters while reading a scheme ("java\tscript:" still
+         * runs), so those are removed before comparing.
+         *
+         * A deny list on purpose: every URL an existing site has saved -- absolute,
+         * relative or scheme-less -- keeps working exactly as before.
+         *
+         * @param mixed $url Stored value.
+         * @return bool
+         */
+        public static function is_unsafe_url($url)
+        {
+            if (!is_string($url) || '' === $url) {
+                return false;
+            }
+
+            $normalized = strtolower(preg_replace('/[\x00-\x20]+/', '', $url));
+
+            return (bool) preg_match('/^(javascript|vbscript|livescript):/', $normalized);
+        }
+
+        /**
+         * Blank every unsafe URL stored under one of the given keys, at any depth.
+         *
+         * @param mixed    $data Attributes or settings tree.
+         * @param string[] $keys Keys whose values are URLs.
+         * @return mixed
+         */
+        public static function strip_unsafe_urls($data, $keys)
+        {
+            if (!is_array($data)) {
+                return $data;
+            }
+
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $data[$key] = self::strip_unsafe_urls($value, $keys);
+                } elseif (in_array($key, $keys, true) && self::is_unsafe_url($value)) {
+                    $data[$key] = '';
+                }
+            }
+
+            return $data;
+        }
+
+        /**
          * Neutralises spreadsheet formula injection in exported lead data.
          *
          * Name and email arrive from a public form, and the export is opened by an admin in

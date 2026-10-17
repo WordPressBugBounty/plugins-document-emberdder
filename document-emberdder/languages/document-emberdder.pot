@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Document Embedder – Embed PDFs, Word, Excel, and Other Files 2.4.0\n"
+"Project-Id-Version: Document Embedder – Embed PDFs, Word, Excel, and Other Files 2.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/document-emberdder\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-07T03:21:44+00:00\n"
+"POT-Creation-Date: 2026-10-17T05:13:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: document-emberdder\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: document-embedder.php
-msgid "http://documentembedder.com/"
+msgid "https://wordpress.org/plugins/document-emberdder/"
 msgstr ""
 
 #. Description of the plugin
@@ -1039,11 +1039,11 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: includes/features/class-bplde-ajaxcall.php:249
+#: includes/features/class-bplde-ajaxcall.php:255
 msgid "Download limit reached."
 msgstr ""
 
-#: includes/features/class-bplde-ajaxcall.php:289
+#: includes/features/class-bplde-ajaxcall.php:295
 msgid "Invalid document ID"
 msgstr ""
 
@@ -1055,7 +1055,7 @@ msgstr ""
 msgid "Preview is unavailable on this site."
 msgstr ""
 
-#: src/blocks/document-embed/render.php:97
+#: src/blocks/document-embed/render.php:103
 msgid "Loading Viewer..."
 msgstr ""
 
@@ -1367,39 +1367,39 @@ msgstr ""
 msgid "Preview is not available for dropbox"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:296
+#: src/blocks/document-embed/components/Common/Viewer.js:299
 msgid "Open in new tab"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:297
+#: src/blocks/document-embed/components/Common/Viewer.js:300
 msgid "Full screen"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:383
+#: src/blocks/document-embed/components/Common/Viewer.js:386
 msgid "Preview temporarily unavailable."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:390
+#: src/blocks/document-embed/components/Common/Viewer.js:393
 msgid "Download"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:541
+#: src/blocks/document-embed/components/Common/Viewer.js:544
 msgid "No document added yet"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:542
+#: src/blocks/document-embed/components/Common/Viewer.js:545
 msgid "Document unavailable"
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:547
+#: src/blocks/document-embed/components/Common/Viewer.js:550
 msgid "Upload a file from your Media Library or paste a document link in the settings, and it will appear here."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:551
+#: src/blocks/document-embed/components/Common/Viewer.js:554
 msgid "No document has been added to this embed yet."
 msgstr ""
 
-#: src/blocks/document-embed/components/Common/Viewer.js:559
+#: src/blocks/document-embed/components/Common/Viewer.js:562
 msgid "Document Configuration → General → Document File"
 msgstr ""
 

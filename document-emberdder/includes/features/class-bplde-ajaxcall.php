@@ -103,7 +103,11 @@ if ( ! class_exists( 'AJAXCall' ) ) {
                     if ( is_array( $val ) ) {
                         $clean[$clean_key] = $sanitize_settings( $val );
                     } else {
-                        if ( filter_var( $val, FILTER_VALIDATE_URL ) ) {
+                        if ( Functions::is_unsafe_url( $val ) ) {
+                            // "javascript:alert(1)" fails FILTER_VALIDATE_URL and would
+                            // otherwise be stored by sanitize_text_field() untouched.
+                            $clean[$clean_key] = '';
+                        } elseif ( filter_var( $val, FILTER_VALIDATE_URL ) ) {
                             $clean[$clean_key] = esc_url_raw( $val );
                         } elseif ( is_numeric( $val ) ) {
                             $clean[$clean_key] = $val;
@@ -168,6 +172,7 @@ if ( ! class_exists( 'AJAXCall' ) ) {
             }
         
             $settings = get_post_meta( $id, 'bplde_settings', true );
+            $settings = Functions::strip_unsafe_urls( $settings, ['url'] );
         
             wp_send_json_success( [
                 'id'       => $id,
@@ -194,6 +199,7 @@ if ( ! class_exists( 'AJAXCall' ) ) {
             $items = [];
             foreach ( $query->posts as $post ) {
                 $settings = get_post_meta( $post->ID, 'bplde_settings', true );
+                $settings = Functions::strip_unsafe_urls( $settings, ['url'] );
         
                 $items[] = [
                     'id'       => $post->ID,

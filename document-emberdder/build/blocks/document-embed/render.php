@@ -55,6 +55,12 @@ if (!defined('ABSPATH')) {
         $attributes['_de_preview_editing'] = true;
     }
 
+    // URLs in block attributes are never filtered by WordPress, so neutralise script URLs
+    // here. This also covers embeds saved before 2.4.1 and the [doc] shortcode.
+    if (class_exists('\BPLDE\Helper\Functions')) {
+        $attributes = \BPLDE\Helper\Functions::strip_unsafe_urls($attributes, ['doc', 'lightbox_trigger_image']);
+    }
+
     // Enqueue frontend scripts and styles registered in block.json
     if (function_exists('enqueue_block_assets')) {
         wp_enqueue_script('wp-element');
